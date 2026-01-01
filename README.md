@@ -1,81 +1,73 @@
-🎬 Movie Rating System (Backend)
+# 🎬 Movie Rating System (Backend)
 
-A backend RESTful API for managing movies and user ratings, built with FastAPI, PostgreSQL, and SQLAlchemy, following a clean layered architecture (Repository / Service / Controller).
+A backend RESTful API for managing movies and user ratings, built with **FastAPI**, **PostgreSQL**, and **SQLAlchemy**, following a clean **layered architecture**.
 
-🚀 Features
+---
 
-Manage Movies, Directors, Genres
+## 🚀 Features
 
-Assign multiple genres to a movie
+- Manage **Movies**, **Directors**, and **Genres**
+- Add and retrieve **movie ratings**
+- Calculate **average rating** per movie
+- Pagination support for movie listing
+- Clean layered architecture:
+  - Controller
+  - Service
+  - Repository
 
-Add ratings (1–10) to movies
+---
 
-Automatically calculate:
+## 🧱 Tech Stack
 
-Average rating
+- **Python 3.13**
+- **FastAPI**
+- **PostgreSQL**
+- **SQLAlchemy**
+- **Alembic**
+- **Pydantic**
+- **Docker**
+- **Poetry**
 
-Ratings count
+---
 
-Pagination for movie listing
+## 📁 Project Structure
 
-Fully documented API with Swagger UI
 
-Database migrations with Alembic
 
-🧱 Tech Stack
 
-Python 3.13
-
-FastAPI
-
-PostgreSQL
-
-SQLAlchemy ORM
-
-Alembic (migrations)
-
-Pydantic (data validation)
-
-Docker (PostgreSQL container)
-
-📂 Project Structure
 Movie_Rating/
-│
-├── alembic/                # Database migrations
-│
+├── alembic/
+│ ├── versions/
+│ └── env.py
 ├── app/
-│   ├── controller/         # API route handlers
-│   ├── db/                 # Database engine & session
-│   ├── exceptions/         # Custom HTTP exceptions
-│   ├── models/             # SQLAlchemy models
-│   ├── repositories/       # Data access layer
-│   ├── schemas/            # Pydantic schemas
-│   ├── services/           # Business logic layer
-│   └── main.py             # Application entry point
-│
+│ ├── controller/
+│ ├── db/
+│ ├── exceptions/
+│ ├── models/
+│ ├── repositories/
+│ ├── schemas/
+│ ├── services/
+│ └── main.py
 ├── scripts/
-│   └── seed_min.sql        # Minimal seed data
-│
-├── .env.example            # Environment variables example
+│ └── seed_min.sql
+├── .env
+├── .env.example
+├── .gitignore
 ├── alembic.ini
 ├── pyproject.toml
 └── README.md
 
-⚙️ Environment Setup
-1️⃣ Clone repository
-git clone <repository-url>
-cd Movie_Rating
 
-2️⃣ Create virtual environment & install dependencies
-poetry install
+---
 
-3️⃣ Environment variables
+## ⚙️ Environment Variables
 
-Create .env file based on .env.example:
+Create a `.env` file based on `.env.example`:
 
+```env
 DATABASE_URL=postgresql+psycopg2://postgres:12345@localhost:5434/movierating
 
-🐘 Database Setup (PostgreSQL with Docker)
+🐘 Run PostgreSQL with Docker
 docker run -d \
   --name movie-postgres \
   -e POSTGRES_USER=postgres \
@@ -84,89 +76,42 @@ docker run -d \
   -p 5434:5432 \
   postgres:16
 
-🔄 Database Migrations
+🧬 Database Migration
 poetry run alembic upgrade head
-
-🌱 Seed Initial Data (optional)
-docker exec -i movie-postgres psql -U postgres -d movierating < scripts/seed_min.sql
-
-
-This adds:
-
-Sample Directors
-
-Sample Genres
 
 ▶️ Run the Application
 poetry run uvicorn app.main:app --reload
 
+Open Swagger UI:
+http://127.0.0.1:8000/docs
 
-Application will be available at:
+🧪 Seed Initial Data (Optional)
+docker exec -i movie-postgres psql -U postgres -d movierating < scripts/seed_min.sql
 
-API: http://127.0.0.1:8000
+📌 Example API Endpoints
+Create Movie
 
-Swagger UI: http://127.0.0.1:8000/docs
-
-📌 API Endpoints Overview
-🎥 Movies
-Method	Endpoint	Description
-POST	/api/v1/movies/	Create a new movie
-GET	/api/v1/movies/	List movies (paginated)
-⭐ Ratings
-Method	Endpoint	Description
-POST	/api/v1/movies/{movie_id}/ratings	Add rating to a movie
-🧠 Architecture Overview
-
-This project follows Clean Architecture principles:
-
-Controller: Handles HTTP requests & responses
-
-Service: Business logic and validations
-
-Repository: Database access abstraction
-
-Models: Database schema (SQLAlchemy)
-
-Schemas: Input/output validation (Pydantic)
-
-Benefits:
-
-High maintainability
-
-Testability
-
-Clear separation of concerns
-
-✅ Example API Response
+POST /api/v1/movies/
 {
-  "status": "success",
-  "data": {
-    "id": 1,
-    "title": "Inception",
-    "release_year": 2010,
-    "director": {
-      "id": 1,
-      "name": "Christopher Nolan"
-    },
-    "genres": ["Sci-Fi", "Thriller"],
-    "average_rating": 8.0,
-    "ratings_count": 1
-  }
+  "title": "Inception",
+  "director_id": 1,
+  "release_year": 2010,
+  "cast": "Leonardo DiCaprio",
+  "genres": [4, 5]
 }
 
-🧪 Validation Rules
+List Movies
 
-Rating score must be between 1 and 10
+GET /api/v1/movies/?page=1&page_size=10
 
-Invalid inputs return HTTP 422
+Add Rating
 
-Non-existent resources return HTTP 404
+POST /api/v1/movies/{movie_id}/ratings
 
-📄 License
+{
+  "score": 8
+}
 
-This project is developed for educational purposes.
+👩‍💻 Author
 
-✨ Author
-
-Developed by Fatemeh Mehnati
-Backend Developer | FastAPI | PostgreSQL
+Fatemeh Mehnati
