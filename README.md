@@ -36,26 +36,27 @@ A backend RESTful API for managing movies and user ratings, built with **FastAPI
 
 
 Movie_Rating/
-├── alembic/
-│ ├── versions/
-│ └── env.py
+│
+├── alembic/                # Database migrations
+│
 ├── app/
-│ ├── controller/
-│ ├── db/
-│ ├── exceptions/
-│ ├── models/
-│ ├── repositories/
-│ ├── schemas/
-│ ├── services/
-│ └── main.py
+│   ├── controller/         # API route handlers
+│   ├── db/                 # Database engine & session
+│   ├── exceptions/         # Custom HTTP exceptions
+│   ├── models/             # SQLAlchemy models
+│   ├── repositories/       # Data access layer
+│   ├── schemas/            # Pydantic schemas
+│   ├── services/           # Business logic layer
+│   └── main.py             # Application entry point
+│
 ├── scripts/
-│ └── seed_min.sql
-├── .env
-├── .env.example
-├── .gitignore
+│   └── seed_min.sql        # Minimal seed data
+│
+├── .env.example            # Environment variables example
 ├── alembic.ini
 ├── pyproject.toml
 └── README.md
+
 
 
 ---
