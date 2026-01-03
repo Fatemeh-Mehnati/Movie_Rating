@@ -15,12 +15,12 @@ def failure(code: int, message: str):
 
 
 async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-    # خطاهای Pydantic / FastAPI (مثل ورودی اشتباه)
+    # Pydantic / FastAPI errors (such as invalid input)
     return failure(422, "Invalid request")
 
 
 async def http_exception_handler(request: Request, exc):
-    # خطاهای HTTPException که detail ما dict است
+    #HTTPException errors where detail is a dictionary
     if isinstance(getattr(exc, "detail", None), dict) and "code" in exc.detail and "message" in exc.detail:
         return failure(exc.detail["code"], exc.detail["message"])
     return failure(getattr(exc, "status_code", 500), "Internal server error")
