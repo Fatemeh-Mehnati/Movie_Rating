@@ -1,6 +1,10 @@
+import logging
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi import HTTPException
+
+logger = logging.getLogger(__name__)
 
 
 def success(data, status_code: int = 200):
@@ -15,12 +19,36 @@ def failure(code: int, message: str):
 
 
 async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Pydantic / FastAPI errors (such as invalid input)
+    # ✅ Log all validation errors (422) to file
+    # Keep details minimal to avoid leaking sensitive data
+    logger.error(
+        "Request validation error",
+        extra={"path": str(request.url.path), "method": request.method},
+        exc_info=True,
+    )
     return failure(422, "Invalid request")
 
 
-async def http_exception_handler(request: Request, exc):
-    #HTTPException errors where detail is a dictionary
+async def http_exception_handler(request: Request, exc: HTTPException):
+    # ✅ Log all HTTP exceptions (includes your custom APIException and also unexpected HTTPException)
+    status_code = getattr(exc, "status_code", 500)
+
+    # If detail follows your APIException structure:
     if isinstance(getattr(exc, "detail", None), dict) and "code" in exc.detail and "message" in exc.detail:
-        return failure(exc.detail["code"], exc.detail["message"])
-    return failure(getattr(exc, "status_code", 500), "Internal server error")
+        code = int(exc.detail.get("code", status_code))
+        message = str(exc.detail.get("message", "Error"))
+
+        logger.error(
+            "HTTP exception",
+            extra={"path": str(request.url.path), "method": request.method, "code": code, "message": message},
+            exc_info=True,
+        )
+        return failure(code, message)
+
+    # Generic HTTPException (or unexpected shape)
+    logger.error(
+        "HTTP exception",
+        extra={"path": str(request.url.path), "method": request.method, "code": status_code},
+        exc_info=True,
+    )
+    return failure(status_code, "Internal server error")

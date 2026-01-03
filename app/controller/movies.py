@@ -15,6 +15,10 @@ router = APIRouter(prefix="/api/v1/movies", tags=["movies"])
 # ✅ Logger for this module
 logger = logging.getLogger("movie_rating")
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 
 @router.get("/")
 def list_movies(
@@ -118,3 +122,8 @@ def add_rating(movie_id: int, payload: RatingCreate, db: Session = Depends(get_d
             exc_info=True,
         )
         raise
+
+
+
+
+
