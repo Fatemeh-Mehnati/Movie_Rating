@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16
+    container_name: movierating-db
+    environment:
+      POSTGRES_DB: movierating
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5434:5432"
+    volumes:
+      - movierating_pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: movierating-app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:12345@db:5432/movierating
+    depends_on:
+      - db
+
+volumes:
+  movierating_pgdata:
